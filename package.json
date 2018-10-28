@@ -1,0 +1,14 @@
+{
+  "name": "bingo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "elm-live src/Bingo.elm --open --start-page=index.html -- --output=stuff/bingo.js"
+  },
+  "keywords": [
+    "elm"
+  ],
+  "author": "Noe Code <elmaildenoe@gmail.com>",
+  "license": "ISC"
+}
