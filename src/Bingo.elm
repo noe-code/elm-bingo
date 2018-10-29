@@ -9,17 +9,16 @@ playerInfo name gameNumber =
     name ++ " - Game# " ++ String.fromInt gameNumber
 
 
-playerInfoText : String -> Int -> Html.Html msg
-playerInfoText name gameNumber =
-    playerInfo name gameNumber
-        |> String.toUpper
-        |> Html.text
-
-
 viewPlayer : String -> Int -> Html.Html msg
 viewPlayer name gameNumber =
+    let
+        playerInfoText =
+            playerInfo name gameNumber
+                |> String.toUpper
+                |> Html.text
+    in
     Html.h2 [ id "info", class "classy" ]
-        [ playerInfoText name gameNumber ]
+        [ playerInfoText ]
 
 
 main =
