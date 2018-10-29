@@ -15,11 +15,34 @@ viewPlayer name gameNumber =
         playerInfoText =
             playerInfo name gameNumber
                 |> String.toUpper
-                |> Html.text
+                |> text
     in
-    Html.h2 [ id "info", class "classy" ]
+    h2 [ id "info", class "classy" ]
         [ playerInfoText ]
 
 
+viewHeader : String -> Html.Html msg
+viewHeader title =
+    header []
+        [ text title ]
+
+
+viewFooter : Html.Html msg
+viewFooter =
+    footer []
+        [ a [ href "https://elm-lang.org/" ]
+            [ text "Powered by Elm" ]
+        ]
+
+
+view : Html.Html msg
+view =
+    div [ class "content" ]
+        [ viewHeader "BUZZWORD BINGO"
+        , viewPlayer "Pepe" 2
+        , viewFooter
+        ]
+
+
 main =
-    viewPlayer "Noe" 3
+    view
