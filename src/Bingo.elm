@@ -16,6 +16,11 @@ playerInfoText name gameNumber =
         |> Html.text
 
 
+viewPlayer : String -> Int -> Html.Html msg
+viewPlayer name gameNumber =
+    Html.h2 [ id "info", class "classy" ]
+        [ playerInfoText name gameNumber ]
+
+
 main =
-    -- Html.h2 : List (Attribute msg) -> List (Html msg) -> Html msg
-    Html.h2 [ id "info", class "classy" ] [ playerInfoText "Noe" 5 ]
+    viewPlayer "Noe" 3
