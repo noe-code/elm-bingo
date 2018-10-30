@@ -59,15 +59,18 @@ viewFooter =
         ]
 
 
-view : Html msg
-view =
+
+--view : Html msg
+
+
+view model =
     div [ class "content" ]
         [ viewHeader "BUZZWORD BINGO"
-        , viewPlayer "Pepe" 2
+        , viewPlayer model.name model.game
         , viewFooter
         ]
 
 
 main : Html msg
 main =
-    view
+    view initialModel
