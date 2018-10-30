@@ -4,12 +4,33 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 
 
+
+--MODEL
+
+
+initialModel =
+    { name = "Dougie"
+    , game = 2
+    , entries = initialEntries
+    }
+
+
+initialEntries =
+    [ { id = 1, prhase = "holistic", points = 400, marked = False }
+    , { id = 2, prhase = "sinergy", points = 200, marked = False }
+    ]
+
+
+
+-- VIEW
+
+
 playerInfo : String -> Int -> String
 playerInfo name gameNumber =
     name ++ " - Game# " ++ String.fromInt gameNumber
 
 
-viewPlayer : String -> Int -> Html.Html msg
+viewPlayer : String -> Int -> Html msg
 viewPlayer name gameNumber =
     let
         playerInfoText =
@@ -21,13 +42,13 @@ viewPlayer name gameNumber =
         [ playerInfoText ]
 
 
-viewHeader : String -> Html.Html msg
+viewHeader : String -> Html msg
 viewHeader title =
     header []
         [ text title ]
 
 
-viewFooter : Html.Html msg
+viewFooter : Html msg
 viewFooter =
     footer []
         [ a [ href "https://elm-lang.org/" ]
@@ -35,7 +56,7 @@ viewFooter =
         ]
 
 
-view : Html.Html msg
+view : Html msg
 view =
     div [ class "content" ]
         [ viewHeader "BUZZWORD BINGO"
@@ -44,5 +65,6 @@ view =
         ]
 
 
+main : Html msg
 main =
     view
