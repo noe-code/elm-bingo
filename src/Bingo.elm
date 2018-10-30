@@ -1,13 +1,30 @@
 module Bingo exposing (main)
 
+import Debug exposing (toString)
 import Html exposing (..)
 import Html.Attributes exposing (..)
+
+
+type alias Model =
+    { name : String
+    , game : Int
+    , entries : List Entry
+    }
+
+
+type alias Entry =
+    { id : Int
+    , prhase : String
+    , points : Int
+    , marked : Bool
+    }
 
 
 
 --MODEL
 
 
+initialModel : Model
 initialModel =
     { name = "Dougie"
     , game = 2
@@ -15,6 +32,7 @@ initialModel =
     }
 
 
+initialEntries : List Entry
 initialEntries =
     [ { id = 1, prhase = "holistic", points = 400, marked = False }
     , { id = 2, prhase = "sinergy", points = 200, marked = False }
@@ -59,14 +77,12 @@ viewFooter =
         ]
 
 
-
---view : Html msg
-
-
+view : Model -> Html msg
 view model =
     div [ class "content" ]
         [ viewHeader "BUZZWORD BINGO"
         , viewPlayer model.name model.game
+        , div [ class "debug" ] [ text (Debug.toString model) ]
         , viewFooter
         ]
 
