@@ -45,7 +45,10 @@ viewPlayer name gameNumber =
 viewHeader : String -> Html msg
 viewHeader title =
     header []
-        [ text title ]
+        [ h1
+            []
+            [ text title ]
+        ]
 
 
 viewFooter : Html msg
