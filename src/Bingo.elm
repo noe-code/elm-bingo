@@ -3,6 +3,7 @@ module Bingo exposing (main)
 import Debug exposing (toString)
 import Html exposing (..)
 import Html.Attributes exposing (..)
+import List
 
 
 type alias Model =
@@ -69,6 +70,23 @@ viewHeader title =
         ]
 
 
+viewEntryItem : Entry -> Html msg
+viewEntryItem entries =
+    li []
+        [ span [ class "prhase" ] [ text entries.prhase ]
+        , span [ class "points" ] [ text (String.fromInt entries.points) ]
+        ]
+
+
+viewEntryList : List Entry -> Html msg
+viewEntryList entries =
+    let
+        listOfEntries =
+            List.map viewEntryItem entries
+    in
+    ul [] listOfEntries
+
+
 viewFooter : Html msg
 viewFooter =
     footer []
@@ -82,6 +100,7 @@ view model =
     div [ class "content" ]
         [ viewHeader "BUZZWORD BINGO"
         , viewPlayer model.name model.game
+        , viewEntryList model.entries
         , div [ class "debug" ] [ text (Debug.toString model) ]
         , viewFooter
         ]
