@@ -17,7 +17,7 @@ type alias Model =
 
 type alias Entry =
     { id : Int
-    , prhase : String
+    , phrase : String
     , points : Int
     , marked : Bool
     }
@@ -37,10 +37,10 @@ initialModel =
 
 initialEntries : List Entry
 initialEntries =
-    [ { id = 1, prhase = "holistic", points = 400, marked = False }
-    , { id = 2, prhase = "sinergy", points = 200, marked = False }
-    , { id = 3, prhase = "block chain", points = 600, marked = False }
-    , { id = 4, prhase = "the cloud", points = 100, marked = False }
+    [ { id = 1, phrase = "holistic", points = 400, marked = False }
+    , { id = 2, phrase = "sinergy", points = 200, marked = False }
+    , { id = 3, phrase = "block chain", points = 600, marked = False }
+    , { id = 4, phrase = "the cloud", points = 100, marked = False }
     ]
 
 
@@ -112,7 +112,7 @@ viewHeader title =
 viewEntryItem : Entry -> Html Msg
 viewEntryItem entry =
     li [ classList [ ( "marked", entry.marked ) ], onClick (Mark entry.id) ]
-        [ span [ class "prhase" ] [ text entry.prhase ]
+        [ span [ class "phrase" ] [ text entry.phrase ]
         , span [ class "points" ] [ text (String.fromInt entry.points) ]
         ]
 
