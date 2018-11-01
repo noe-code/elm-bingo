@@ -48,13 +48,25 @@ initialEntries =
 
 type Msg
     = NewGame
+    | Mark Int
 
 
 update : Msg -> Model -> Model
 update msg model =
     case msg of
         NewGame ->
-            { model | game = model.game + 1 }
+            { model | game = model.game + 1, entries = initialEntries }
+
+        Mark id ->
+            let
+                markEntry e =
+                    if e.id == id then
+                        { e | marked = not e.marked }
+
+                    else
+                        e
+            in
+            { model | entries = List.map markEntry model.entries }
 
 
 
@@ -88,10 +100,10 @@ viewHeader title =
 
 
 viewEntryItem : Entry -> Html Msg
-viewEntryItem entries =
-    li []
-        [ span [ class "prhase" ] [ text entries.prhase ]
-        , span [ class "points" ] [ text (String.fromInt entries.points) ]
+viewEntryItem entry =
+    li [ classList [ ( "marked", entry.marked ) ], onClick (Mark entry.id) ]
+        [ span [ class "prhase" ] [ text entry.prhase ]
+        , span [ class "points" ] [ text (String.fromInt entry.points) ]
         ]
 
 
