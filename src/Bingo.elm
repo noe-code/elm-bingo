@@ -5,7 +5,7 @@ import Debug exposing (toString)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
-import List exposing (..)
+import List
 
 
 type alias Model =
@@ -74,7 +74,7 @@ update msg model =
         Sort ->
             let
                 sortedEntries entries =
-                    reverse (sortBy .points entries)
+                    List.reverse (List.sortBy .points entries)
             in
             { model | entries = sortedEntries model.entries }
 
@@ -126,6 +126,31 @@ viewEntryList entries =
     ul [] listOfEntries
 
 
+sumMarkedPoints : List Entry -> Int
+sumMarkedPoints entries =
+    entries
+        |> List.filter .marked
+        |> List.map .points
+        |> List.sum
+
+
+
+{- sumMarkedPoints : List Entry -> Int
+   sumMarkedPoints entries =
+       entries
+           |> List.filter .marked
+           |> List.foldl (\e sum -> sum + e.points) 0
+-}
+
+
+viewScore : List Entry -> Html Msg
+viewScore entries =
+    div [ class "score" ]
+        [ span [ class "label" ] [ text "Score" ]
+        , span [ class "value" ] [ text (String.fromInt (sumMarkedPoints entries)) ]
+        ]
+
+
 viewFooter : Html Msg
 viewFooter =
     footer []
@@ -140,11 +165,10 @@ view model =
         [ viewHeader "BUZZWORD BINGO"
         , viewPlayer model.name model.game
         , viewEntryList model.entries
+        , viewScore model.entries
         , div [ class "button-group" ]
             [ button [ onClick NewGame ] [ text "New Game" ]
-            ]
-        , div [ class "button-group" ]
-            [ button [ onClick Sort ] [ text "Sort" ]
+            , button [ onClick Sort ] [ text "Sort" ]
             ]
         , div [ class "debug" ] [ text (Debug.toString model) ]
         , viewFooter
