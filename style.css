@@ -1,3 +1,7 @@
+* {
+  box-sizing: border-box;
+}
+
 html,
 body {
   margin: 0;
@@ -63,7 +67,6 @@ button {
   background-color: #d9d9d9;
   cursor: pointer;
   display: inline-block;
-  box-sizing: border-box;
 }
 
 button:hover {
@@ -73,7 +76,7 @@ button:hover {
 input[type="text"] {
   padding: 6px 10px;
   font-size: 1.15em;
-  box-sizing: border-box;
+  /* box-sizing: border-box; */
   display: inline-block;
 }
 
@@ -81,15 +84,14 @@ ul {
   margin: 30px 0;
   padding: 0;
   list-style: none;
-  font-size: 1.5em;
-  font-weight: bold;
-  text-align: left;
 }
 
 li {
   background: #fff;
-  height: 25px;
+  height: 55px;
   position: relative;
+  font-size: 1.5em;
+  font-weight: bold;
   padding: 15px 30px;
   margin-bottom: 8px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -97,7 +99,6 @@ li {
 
 li:hover {
   background: #fcfcfc;
-  /* background: #61a1bc; */
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
   cursor: pointer;
 }
