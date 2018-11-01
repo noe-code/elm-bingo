@@ -1,8 +1,10 @@
 module Bingo exposing (main)
 
+import Browser
 import Debug exposing (toString)
 import Html exposing (..)
 import Html.Attributes exposing (..)
+import Html.Events exposing (onClick)
 import List
 
 
@@ -41,6 +43,21 @@ initialEntries =
 
 
 
+-- UPDATE
+
+
+type Msg
+    = NewGame
+
+
+update : Msg -> Model -> Model
+update msg model =
+    case msg of
+        NewGame ->
+            { model | game = model.game + 1 }
+
+
+
 -- VIEW
 
 
@@ -49,7 +66,7 @@ playerInfo name gameNumber =
     name ++ " - Game# " ++ String.fromInt gameNumber
 
 
-viewPlayer : String -> Int -> Html msg
+viewPlayer : String -> Int -> Html Msg
 viewPlayer name gameNumber =
     let
         playerInfoText =
@@ -61,7 +78,7 @@ viewPlayer name gameNumber =
         [ playerInfoText ]
 
 
-viewHeader : String -> Html msg
+viewHeader : String -> Html Msg
 viewHeader title =
     header []
         [ h1
@@ -70,7 +87,7 @@ viewHeader title =
         ]
 
 
-viewEntryItem : Entry -> Html msg
+viewEntryItem : Entry -> Html Msg
 viewEntryItem entries =
     li []
         [ span [ class "prhase" ] [ text entries.prhase ]
@@ -78,7 +95,7 @@ viewEntryItem entries =
         ]
 
 
-viewEntryList : List Entry -> Html msg
+viewEntryList : List Entry -> Html Msg
 viewEntryList entries =
     let
         listOfEntries =
@@ -87,7 +104,7 @@ viewEntryList entries =
     ul [] listOfEntries
 
 
-viewFooter : Html msg
+viewFooter : Html Msg
 viewFooter =
     footer []
         [ a [ href "https://elm-lang.org/" ]
@@ -95,17 +112,24 @@ viewFooter =
         ]
 
 
-view : Model -> Html msg
+view : Model -> Html Msg
 view model =
     div [ class "content" ]
         [ viewHeader "BUZZWORD BINGO"
         , viewPlayer model.name model.game
         , viewEntryList model.entries
+        , div [ class "button-group" ]
+            [ button [ onClick NewGame ] [ text "New Game" ]
+            ]
         , div [ class "debug" ] [ text (Debug.toString model) ]
         , viewFooter
         ]
 
 
-main : Html msg
+main : Program () Model Msg
 main =
-    view initialModel
+    Browser.sandbox
+        { init = initialModel
+        , view = view
+        , update = update
+        }
