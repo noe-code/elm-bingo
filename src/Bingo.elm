@@ -5,7 +5,7 @@ import Debug exposing (toString)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
-import List
+import List exposing (..)
 
 
 type alias Model =
@@ -39,6 +39,8 @@ initialEntries : List Entry
 initialEntries =
     [ { id = 1, prhase = "holistic", points = 400, marked = False }
     , { id = 2, prhase = "sinergy", points = 200, marked = False }
+    , { id = 3, prhase = "block chain", points = 600, marked = False }
+    , { id = 4, prhase = "the cloud", points = 100, marked = False }
     ]
 
 
@@ -49,6 +51,7 @@ initialEntries =
 type Msg
     = NewGame
     | Mark Int
+    | Sort
 
 
 update : Msg -> Model -> Model
@@ -67,6 +70,13 @@ update msg model =
                         e
             in
             { model | entries = List.map markEntry model.entries }
+
+        Sort ->
+            let
+                sortedEntries entries =
+                    reverse (sortBy .points entries)
+            in
+            { model | entries = sortedEntries model.entries }
 
 
 
@@ -132,6 +142,9 @@ view model =
         , viewEntryList model.entries
         , div [ class "button-group" ]
             [ button [ onClick NewGame ] [ text "New Game" ]
+            ]
+        , div [ class "button-group" ]
+            [ button [ onClick Sort ] [ text "Sort" ]
             ]
         , div [ class "debug" ] [ text (Debug.toString model) ]
         , viewFooter
