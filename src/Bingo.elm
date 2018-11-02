@@ -6,6 +6,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import List
+import Random
 
 
 type alias Model =
@@ -52,13 +53,17 @@ type Msg
     = NewGame
     | Mark Int
     | Sort
+    | NewRandom Int
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        NewRandom randomNumber ->
+            ( { model | game = randomNumber }, Cmd.none )
+
         NewGame ->
-            ( { model | game = model.game + 1, entries = initialEntries }, Cmd.none )
+            ( { model | game = model.game + 1, entries = initialEntries }, generateRandomNum )
 
         Mark id ->
             let
@@ -77,6 +82,16 @@ update msg model =
                     List.reverse (List.sortBy .points entries)
             in
             ( { model | entries = sortedEntries model.entries }, Cmd.none )
+
+
+
+-- COMANDS
+
+
+generateRandomNum : Cmd Msg
+generateRandomNum =
+    -- Random.generate (a ->msg) -> Generator a -> Cmd msg
+    Random.generate NewRandom (Random.int 1 100)
 
 
 
