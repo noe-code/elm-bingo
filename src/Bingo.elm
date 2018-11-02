@@ -5,6 +5,7 @@ import Debug exposing (toString)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
+import Http
 import List
 import Random
 
@@ -32,17 +33,8 @@ initialModel : Model
 initialModel =
     { name = "Dougie"
     , game = 2
-    , entries = initialEntries
+    , entries = []
     }
-
-
-initialEntries : List Entry
-initialEntries =
-    [ { id = 1, phrase = "holistic", points = 400, marked = False }
-    , { id = 2, phrase = "sinergy", points = 200, marked = False }
-    , { id = 3, phrase = "block chain", points = 600, marked = False }
-    , { id = 4, phrase = "the cloud", points = 100, marked = False }
-    ]
 
 
 
@@ -54,6 +46,7 @@ type Msg
     | Mark Int
     | Sort
     | NewRandom Int
+    | NewEntries (Result Http.Error String)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -63,7 +56,21 @@ update msg model =
             ( { model | game = randomNumber }, Cmd.none )
 
         NewGame ->
-            ( { model | game = model.game + 1, entries = initialEntries }, generateRandomNum )
+            ( { model | game = model.game + 1 }, getEntries )
+
+        NewEntries (Ok jsonString) ->
+            let
+                _ =
+                    Debug.log "It worked!" jsonString
+            in
+            ( model, Cmd.none )
+
+        NewEntries (Err error) ->
+            let
+                _ =
+                    Debug.log "It fails!" error
+            in
+            ( model, Cmd.none )
 
         Mark id ->
             let
@@ -92,6 +99,24 @@ generateRandomNum : Cmd Msg
 generateRandomNum =
     -- Random.generate (a ->msg) -> Generator a -> Cmd msg
     Random.generate NewRandom (Random.int 1 100)
+
+
+
+-- getString: String -> Request String
+-- send : (Result Error a -> msg) -> Request a -> Cmd msg
+-- send : (Result Http.Error String -> Msg) -> Request String -> Cmd Msg
+
+
+entriesUrl : String
+entriesUrl =
+    "http://localhost:3000/random-entries"
+
+
+getEntries : Cmd Msg
+getEntries =
+    entriesUrl
+        |> Http.getString
+        |> Http.send NewEntries
 
 
 
@@ -203,7 +228,7 @@ view model =
 
 init : () -> ( Model, Cmd Msg )
 init _ =
-    ( initialModel, Cmd.none )
+    ( initialModel, getEntries )
 
 
 main =
