@@ -54,11 +54,11 @@ type Msg
     | Sort
 
 
-update : Msg -> Model -> Model
+update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         NewGame ->
-            { model | game = model.game + 1, entries = initialEntries }
+            ( { model | game = model.game + 1, entries = initialEntries }, Cmd.none )
 
         Mark id ->
             let
@@ -69,14 +69,14 @@ update msg model =
                     else
                         e
             in
-            { model | entries = List.map markEntry model.entries }
+            ( { model | entries = List.map markEntry model.entries }, Cmd.none )
 
         Sort ->
             let
                 sortedEntries entries =
                     List.reverse (List.sortBy .points entries)
             in
-            { model | entries = sortedEntries model.entries }
+            ( { model | entries = sortedEntries model.entries }, Cmd.none )
 
 
 
@@ -175,10 +175,26 @@ view model =
         ]
 
 
-main : Program () Model Msg
+
+{- main : Program () Model Msg
+   main =
+       Browser.sandbox
+           { init = initialModel
+           , view = view
+           , update = update
+           }
+-}
+
+
+init : () -> ( Model, Cmd Msg )
+init _ =
+    ( initialModel, Cmd.none )
+
+
 main =
-    Browser.sandbox
-        { init = initialModel
-        , view = view
+    Browser.element
+        { init = init
         , update = update
+        , subscriptions = \_ -> Sub.none
+        , view = view
         }
