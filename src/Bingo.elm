@@ -7,7 +7,7 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import Http
 import Json.Decode as Decode exposing (Decoder, field, succeed)
-import Json.Decode.Pipeline exposing (decode, optional, required)
+import Json.Decode.Pipeline as DecodePipeline
 import List
 import Random
 
@@ -96,7 +96,7 @@ update msg model =
 
 
 -- DECODERS
-{-
+{- }
    entryDecoder : Decoder Entry
    entryDecoder =
        Decode.map4 Entry
@@ -104,16 +104,17 @@ update msg model =
            (field "phrase" Decode.string)
            (field "points" Decode.int)
            (succeed False)
+
 -}
 
 
 entryDecoder : Decoder Entry
 entryDecoder =
-    decode Entry
-        |> required "id" int
-        |> required "phrase" string
-        |> optional "points" int 100
-        |> optional "marked" False
+    Decode.succeed Entry
+        |> DecodePipeline.required "id" Decode.int
+        |> DecodePipeline.required "phrase" Decode.string
+        |> DecodePipeline.optional "points" Decode.int 100
+        |> DecodePipeline.hardcoded False
 
 
 
