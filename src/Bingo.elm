@@ -7,6 +7,7 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import Http
 import Json.Decode as Decode exposing (Decoder, field, succeed)
+import Json.Decode.Pipeline exposing (decode, optional, required)
 import List
 import Random
 
@@ -60,8 +61,13 @@ update msg model =
             ( { model | game = model.game + 1 }, getEntries )
 
         NewEntries (Ok randomEntries) ->
-            ( { model | entries = randomEntries }, Cmd.none )
+            let
+                sortedEntries entries =
+                    List.sortBy .points entries
+            in
+            ( { model | entries = sortedEntries randomEntries }, Cmd.none )
 
+        --List.reverse (List.sortBy .points entries)
         NewEntries (Err error) ->
             let
                 _ =
@@ -90,15 +96,24 @@ update msg model =
 
 
 -- DECODERS
+{-
+   entryDecoder : Decoder Entry
+   entryDecoder =
+       Decode.map4 Entry
+           (field "id" Decode.int)
+           (field "phrase" Decode.string)
+           (field "points" Decode.int)
+           (succeed False)
+-}
 
 
 entryDecoder : Decoder Entry
 entryDecoder =
-    Decode.map4 Entry
-        (field "id" Decode.int)
-        (field "phrase" Decode.string)
-        (field "points" Decode.int)
-        (succeed False)
+    decode Entry
+        |> required "id" int
+        |> required "phrase" string
+        |> optional "points" int 100
+        |> optional "marked" False
 
 
 
