@@ -16,6 +16,7 @@ type alias Model =
     { name : String
     , game : Int
     , entries : List Entry
+    , alertMessage : Maybe String
     }
 
 
@@ -36,6 +37,7 @@ initialModel =
     { name = "Dougie"
     , game = 2
     , entries = []
+    , alertMessage = Just "Errooorrrr"
     }
 
 
@@ -229,11 +231,22 @@ viewFooter =
         ]
 
 
+viewAlertMessage : Maybe String -> Html Msg
+viewAlertMessage alertMessage =
+    case alertMessage of
+        Just message ->
+            div [ class "alert" ] [ text message ]
+
+        Nothing ->
+            text ""
+
+
 view : Model -> Html Msg
 view model =
     div [ class "content" ]
         [ viewHeader "BUZZWORD BINGO"
         , viewPlayer model.name model.game
+        , viewAlertMessage model.alertMessage
         , viewEntryList model.entries
         , viewScore model.entries
         , div [ class "button-group" ]
