@@ -162,6 +162,8 @@ li.marked {
 }
 
 .alert {
+  display: flex;
+  justify-content: space-between;
   color: #797b74;
   padding: 10px;
   text-align: center;
@@ -174,7 +176,7 @@ li.marked {
   margin-left: 15px;
   color: #797b74;
   font-weight: bold;
-  float: right;
+  /*float: right;*/
   line-height: 20px;
   cursor: pointer;
   transition: 0.3s;

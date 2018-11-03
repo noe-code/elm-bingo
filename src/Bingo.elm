@@ -37,7 +37,7 @@ initialModel =
     { name = "Dougie"
     , game = 2
     , entries = []
-    , alertMessage = Just "Errooorrrr"
+    , alertMessage = Nothing
     }
 
 
@@ -51,6 +51,7 @@ type Msg
     | Sort
     | NewRandom Int
     | NewEntries (Result Http.Error (List Entry))
+    | CloseAlertMessage
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -94,6 +95,9 @@ update msg model =
                     List.reverse (List.sortBy .points entries)
             in
             ( { model | entries = sortedEntries model.entries }, Cmd.none )
+
+        CloseAlertMessage ->
+            ( { model | alertMessage = Nothing }, Cmd.none )
 
 
 
@@ -235,7 +239,15 @@ viewAlertMessage : Maybe String -> Html Msg
 viewAlertMessage alertMessage =
     case alertMessage of
         Just message ->
-            div [ class "alert" ] [ text message ]
+            --div [ class "alert" ] [ text message ]
+            div [ class "alert" ]
+                [ div
+                    []
+                    [ text message ]
+                , div
+                    [ class "close", onClick CloseAlertMessage ]
+                    [ text "X" ]
+                ]
 
         Nothing ->
             text ""
