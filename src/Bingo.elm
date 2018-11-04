@@ -4,7 +4,7 @@ import Browser
 import Debug exposing (toString)
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Html.Events exposing (onClick)
+import Html.Events exposing (onClick, onInput)
 import Http
 import Json.Decode as Decode exposing (Decoder, field, int, string, succeed)
 import Json.Decode.Pipeline exposing (hardcoded, optional, required)
@@ -18,6 +18,7 @@ type alias Model =
     , game : Int
     , entries : List Entry
     , alertMessage : Maybe String
+    , inputName : String
     }
 
 
@@ -42,10 +43,11 @@ type alias Score =
 
 initialModel : Model
 initialModel =
-    { name = "Dougie"
+    { name = "Anonymous"
     , game = 2
     , entries = []
     , alertMessage = Nothing
+    , inputName = ""
     }
 
 
@@ -62,6 +64,9 @@ type Msg
     | CloseAlertMessage
     | ShareScore
     | NewScore (Result Http.Error Score)
+    | SetNameInput String
+    | SaveName
+    | CancelName
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -139,6 +144,15 @@ update msg model =
 
         CloseAlertMessage ->
             ( { model | alertMessage = Nothing }, Cmd.none )
+
+        SetNameInput value ->
+            ( { model | inputName = value }, Cmd.none )
+
+        SaveName ->
+            ( { model | name = model.inputName }, Cmd.none )
+
+        CancelName ->
+            ( { model | inputName = "" }, Cmd.none )
 
 
 
@@ -331,11 +345,28 @@ viewAlertMessage alertMessage =
             text ""
 
 
+viewNameInput : Model -> Html Msg
+viewNameInput model =
+    div [ class "name-input" ]
+        [ input
+            [ type_ "Text"
+            , placeholder "Who's playing?"
+            , autofocus True
+            , value model.inputName
+            , onInput SetNameInput
+            ]
+            []
+        , button [ onClick SaveName ] [ text "Save" ]
+        , button [ onClick CancelName ] [ text "Cancel" ]
+        ]
+
+
 view : Model -> Html Msg
 view model =
     div [ class "content" ]
         [ viewHeader "BUZZWORD BINGO"
         , viewPlayer model.name model.game
+        , viewNameInput model
         , viewAlertMessage model.alertMessage
         , viewEntryList model.entries
         , viewScore model.entries
