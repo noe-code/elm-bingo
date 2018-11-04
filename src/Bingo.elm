@@ -283,6 +283,10 @@ sumMarkedPoints entries =
         |> List.sum
 
 
+zeroPoints model =
+    sumMarkedPoints model.entries == 0
+
+
 
 {- sumMarkedPoints : List Entry -> Int
    sumMarkedPoints entries =
@@ -337,7 +341,7 @@ view model =
         , div [ class "button-group" ]
             [ button [ onClick NewGame ] [ text "New Game" ]
             , button [ onClick Sort ] [ text "Sort" ]
-            , button [ onClick ShareScore ] [ text "Share Score" ]
+            , button [ onClick ShareScore, disabled (zeroPoints model) ] [ text "Share Score" ]
             ]
         , div [ class "debug" ] [ text (Debug.toString model) ]
         , viewFooter
