@@ -11,6 +11,7 @@ import Json.Decode.Pipeline exposing (hardcoded, optional, required)
 import Json.Encode as Encode
 import List
 import Random
+import ViewHelpers exposing (..)
 
 
 type GameState
@@ -98,22 +99,7 @@ update msg model =
 
         --List.reverse (List.sortBy .points entries)
         NewEntries (Err error) ->
-            let
-                errorMessage =
-                    case error of
-                        Http.NetworkError ->
-                            "Is the server running?"
-
-                        Http.BadStatus response ->
-                            Debug.toString response.status
-
-                        Http.BadPayload response _ ->
-                            "Decoding Failed: " ++ response
-
-                        _ ->
-                            Debug.toString error
-            in
-            ( { model | alertMessage = Just errorMessage }, Cmd.none )
+            ( { model | alertMessage = Just (httpErrorToMessage error) }, Cmd.none )
 
         ShareScore ->
             ( model, postScore model )
@@ -168,6 +154,22 @@ update msg model =
 
         CancelName ->
             ( { model | inputName = "", gameState = Playing }, Cmd.none )
+
+
+httpErrorToMessage : Http.Error -> String
+httpErrorToMessage error =
+    case error of
+        Http.NetworkError ->
+            "Is the server running?"
+
+        Http.BadStatus response ->
+            Debug.toString response.status
+
+        Http.BadPayload response _ ->
+            "Decoding Failed: " ++ response
+
+        _ ->
+            Debug.toString error
 
 
 
@@ -333,24 +335,6 @@ viewFooter =
         ]
 
 
-viewAlertMessage : Maybe String -> Html Msg
-viewAlertMessage alertMessage =
-    case alertMessage of
-        Just message ->
-            --div [ class "alert" ] [ text message ]
-            div [ class "alert" ]
-                [ div
-                    []
-                    [ text message ]
-                , div
-                    [ class "close", onClick CloseAlertMessage ]
-                    [ text "X" ]
-                ]
-
-        Nothing ->
-            text ""
-
-
 viewNameInput : Model -> Html Msg
 viewNameInput model =
     case model.gameState of
@@ -378,7 +362,7 @@ view model =
         [ viewHeader "BUZZWORD BINGO"
         , viewPlayer model
         , viewNameInput model
-        , viewAlertMessage model.alertMessage
+        , alert CloseAlertMessage model.alertMessage
         , viewEntryList model.entries
         , viewScore model.entries
         , div [ class "button-group" ]
