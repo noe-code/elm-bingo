@@ -283,6 +283,7 @@ sumMarkedPoints entries =
         |> List.sum
 
 
+zeroPoints : Model -> Bool
 zeroPoints model =
     sumMarkedPoints model.entries == 0
 
