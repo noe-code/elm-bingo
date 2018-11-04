@@ -73,10 +73,21 @@ update msg model =
         --List.reverse (List.sortBy .points entries)
         NewEntries (Err error) ->
             let
-                _ =
-                    Debug.log "It fails!" error
+                errorMessage =
+                    case error of
+                        Http.NetworkError ->
+                            "Is the server running?"
+
+                        Http.BadStatus response ->
+                            Debug.toString response.status
+
+                        Http.BadPayload response _ ->
+                            "Decoding Failed: " ++ response
+
+                        _ ->
+                            Debug.toString error
             in
-            ( model, Cmd.none )
+            ( { model | alertMessage = Just errorMessage }, Cmd.none )
 
         Mark id ->
             let
