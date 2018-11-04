@@ -13,12 +13,18 @@ import List
 import Random
 
 
+type GameState
+    = EnteringName
+    | Playing
+
+
 type alias Model =
     { name : String
     , game : Int
     , entries : List Entry
     , alertMessage : Maybe String
     , inputName : String
+    , gameState : GameState
     }
 
 
@@ -48,6 +54,7 @@ initialModel =
     , entries = []
     , alertMessage = Nothing
     , inputName = ""
+    , gameState = EnteringName
     }
 
 
@@ -67,11 +74,15 @@ type Msg
     | SetNameInput String
     | SaveName
     | CancelName
+    | ChangeGameState GameState
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        ChangeGameState state ->
+            ( { model | gameState = state }, Cmd.none )
+
         NewRandom randomNumber ->
             ( { model | game = randomNumber }, Cmd.none )
 
@@ -149,10 +160,10 @@ update msg model =
             ( { model | inputName = value }, Cmd.none )
 
         SaveName ->
-            ( { model | name = model.inputName }, Cmd.none )
+            ( { model | name = model.inputName, gameState = Playing, inputName = "" }, Cmd.none )
 
         CancelName ->
-            ( { model | inputName = "" }, Cmd.none )
+            ( { model | inputName = "", gameState = Playing }, Cmd.none )
 
 
 
@@ -246,21 +257,12 @@ postScore model =
 -- VIEW
 
 
-playerInfo : String -> Int -> String
-playerInfo name gameNumber =
-    name ++ " - Game# " ++ String.fromInt gameNumber
-
-
-viewPlayer : String -> Int -> Html Msg
-viewPlayer name gameNumber =
-    let
-        playerInfoText =
-            playerInfo name gameNumber
-                |> String.toUpper
-                |> text
-    in
+viewPlayer : Model -> Html Msg
+viewPlayer model =
     h2 [ id "info", class "classy" ]
-        [ playerInfoText ]
+        [ a [ href "#", onClick (ChangeGameState EnteringName) ] [ text model.name ]
+        , text (" - Game# " ++ String.fromInt model.game)
+        ]
 
 
 viewHeader : String -> Html Msg
@@ -300,6 +302,11 @@ sumMarkedPoints entries =
 zeroPoints : Model -> Bool
 zeroPoints model =
     sumMarkedPoints model.entries == 0
+
+
+noInputName : Model -> Bool
+noInputName model =
+    model.inputName == ""
 
 
 
@@ -347,25 +354,30 @@ viewAlertMessage alertMessage =
 
 viewNameInput : Model -> Html Msg
 viewNameInput model =
-    div [ class "name-input" ]
-        [ input
-            [ type_ "Text"
-            , placeholder "Who's playing?"
-            , autofocus True
-            , value model.inputName
-            , onInput SetNameInput
-            ]
-            []
-        , button [ onClick SaveName ] [ text "Save" ]
-        , button [ onClick CancelName ] [ text "Cancel" ]
-        ]
+    case model.gameState of
+        EnteringName ->
+            div [ class "name-input" ]
+                [ input
+                    [ type_ "Text"
+                    , placeholder "Who's playing?"
+                    , autofocus True
+                    , value model.inputName
+                    , onInput SetNameInput
+                    ]
+                    []
+                , button [ onClick SaveName, disabled (noInputName model) ] [ text "Save" ]
+                , button [ onClick CancelName ] [ text "Cancel" ]
+                ]
+
+        Playing ->
+            text ""
 
 
 view : Model -> Html Msg
 view model =
     div [ class "content" ]
         [ viewHeader "BUZZWORD BINGO"
-        , viewPlayer model.name model.game
+        , viewPlayer model
         , viewNameInput model
         , viewAlertMessage model.alertMessage
         , viewEntryList model.entries
