@@ -160,7 +160,11 @@ update msg model =
             ( { model | inputName = value }, Cmd.none )
 
         SaveName ->
-            ( { model | name = model.inputName, gameState = Playing, inputName = "" }, Cmd.none )
+            if String.isEmpty model.inputName then
+                ( model, Cmd.none )
+
+            else
+                ( { model | name = model.inputName, gameState = Playing, inputName = "" }, Cmd.none )
 
         CancelName ->
             ( { model | inputName = "", gameState = Playing }, Cmd.none )
@@ -304,11 +308,6 @@ zeroPoints model =
     sumMarkedPoints model.entries == 0
 
 
-noInputName : Model -> Bool
-noInputName model =
-    model.inputName == ""
-
-
 
 {- sumMarkedPoints : List Entry -> Int
    sumMarkedPoints entries =
@@ -365,7 +364,7 @@ viewNameInput model =
                     , onInput SetNameInput
                     ]
                     []
-                , button [ onClick SaveName, disabled (noInputName model) ] [ text "Save" ]
+                , button [ onClick SaveName ] [ text "Save" ]
                 , button [ onClick CancelName ] [ text "Cancel" ]
                 ]
 
