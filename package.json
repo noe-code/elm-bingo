@@ -4,11 +4,16 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "elm-live src/Bingo.elm --open --start-page=index.html -- --output=stuff/bingo.js"
+    "dev": "elm-live src/Bingo.elm --open --start-page=index.html -- --output=stuff/bingo.js",
+    "server": "node server/index.js"
   },
   "keywords": [
     "elm"
   ],
   "author": "Noe Code <elmaildenoe@gmail.com>",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "json-server": "^0.14.0",
+    "underscore": "^1.9.1"
+  }
 }
