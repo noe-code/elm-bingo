@@ -1,4 +1,4 @@
-module Bingo exposing (main)
+module Main exposing (main)
 
 import Browser
 import Debug exposing (toString)
@@ -229,7 +229,7 @@ generateRandomNum =
 
 entriesUrl : String
 entriesUrl =
-    "http://localhost:3003/random-entries"
+    "http://localhost:3000/random-entries"
 
 
 
