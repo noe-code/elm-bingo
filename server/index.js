@@ -32,11 +32,11 @@ var middlewares = jsonServer.defaults();
 server.use(middlewares);
 
 // Use default router
-var router = jsonServer.router("db.json");
+var router = jsonServer.router("./server/db.json");
 server.use(router);
 
-server.listen(3000, function() {
+server.listen(3003, function() {
   console.log();
-  console.log("  🚀  Serving db.json on http://localhost:3000");
+  console.log("  🚀  Serving db.json on http://localhost:3003  🚀  ");
   console.log();
 });

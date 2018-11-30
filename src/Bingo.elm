@@ -229,7 +229,7 @@ generateRandomNum =
 
 entriesUrl : String
 entriesUrl =
-    "http://localhost:3000/random-entries"
+    "http://localhost:3003/random-entries"
 
 
 
